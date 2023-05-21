@@ -1,0 +1,31 @@
+#user/bin/env bash
+python3 -m torch.distributed.launch --nproc_per_node=1 --master_port 40067 run.py \
+        --task "EmbDistillDSI_cons" \
+        --project_name "huggingface" \
+        --model_name "t5-base" \
+        --run_name "MSMarco-300k-doctquery-DSI-colbertdistill-multitask-rtq-nocons-semantic" \
+        --max_length 32 \
+        --id_max_length 200 \
+        --num_beam 5 \
+        --train_file 'data/msmarco_data/300k/msmarco_corpus_with_ori.tsv.merge.docTquery.withcolbertPRF.semantic' \
+        --valid_file 'data/msmarco_data/300k/msmarco_dev_data.json.semantic' \
+        --output_dir "output/models/MSMarco-300k-doctquery-DSI-colbertdistill-multitask-rtq-nocons-semantic" \
+        --learning_rate 0.0005 \
+        --warmup_steps 300000 \
+        --per_device_train_batch_size 128 \
+        --per_device_eval_batch_size 64 \
+        --evaluation_strategy steps \
+        --eval_steps 30000 \
+        --max_steps 3000000 \
+        --save_strategy steps \
+        --dataloader_num_workers 10 \
+        --save_steps 30000 \
+        --save_total_limit 2 \
+        --load_best_model_at_end \
+        --gradient_accumulation_steps 1 \
+        --report_to wandb \
+        --logging_steps 100 \
+        --dataloader_drop_last False \
+        --metric_for_best_model Hits@10 \
+        --greater_is_better True \
+        --remove_prompt True
